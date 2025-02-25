@@ -1,0 +1,34 @@
+/* public/css/style.css */
+
+/* Global Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Card customizations */
+.card {
+  border: none;
+  border-radius: 10px;
+}
+
+.card-header {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* Footer styling for the login card */
+.card-footer {
+  font-size: 0.85rem;
+}
+
+/* Alert styling adjustments */
+.alert {
+  font-weight: 500;
+}
+
+/* Additional spacing for buttons */
+.btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+}

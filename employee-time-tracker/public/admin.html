@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - Employee Time Logs</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/bg.css">
+  <link rel="stylesheet" href="css/admin.css">  <!-- Link to the new admin.css -->
+</head>
+<body>
+  <!-- swirling ASCII -->
+  <canvas id="bgCanvas"></canvas>
+    <div class="overlay"></div>
+
+  <button id="settingsBtn" class="btn btn-secondary settings-button">Settings</button>
+
+  <div class="settings-panel" id="settingsPanel"> <!-- Settings Panel - initially hidden -->
+    <h4>Settings</h4>
+    <hr/>
+
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle-container">
+      <span class="dark-mode-toggle-label">Dark Mode:</span>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+        <label class="form-check-label" for="darkModeSwitch"></label>
+      </div>
+    </div>
+    <hr/>
+
+    <!-- Change Password Form -->
+    <h5>Change Password</h5>
+    <form id="passwordForm">
+      <div class="mb-3">
+        <label for="currentPassword" class="form-label">Current Password</label>
+        <input type="password" class="form-control" id="currentPassword" required>
+      </div>
+      <div class="mb-3">
+        <label for="newPassword" class="form-label">New Password</label>
+        <input type="password" class="form-control" id="newPassword" required>
+      </div>
+      <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+        <input type="password" class="form-control" id="confirmPassword" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Change Password</button>
+      <div id="passwordMessage" class="mt-2"></div>
+    </form>
+    <hr/>
+    <button id="closeSettingsBtn" class="btn btn-secondary">Close Settings</button>
+  </div>
+
+
+  <div class="page-content" id="pageContent">  <!-- Added id="pageContent" to page-content -->
+    <!-- Floating Users List - REMOVED from here -->
+
+    <div class="container mt-5 admin-page-container">  <!-- Added admin-page-container class to container -->
+
+      <!-- Main Admin Panel Card -->
+      <div class="card shadow main-admin-card">  <!-- Added main-admin-card class -->
+        <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+          <h3>Admin Panel</h3>
+          <div>
+            <button id="resetLogsBtn" class="btn btn-warning me-2">Reset Logs</button>
+            <button id="logoutBtn" class="btn btn-danger">Logout</button>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <!-- Publish News Form -->
+          <h4>Publish News</h4>
+          <form id="newsForm" class="mb-4">
+            <div class="mb-3">
+              <input type="text" id="newsTitle" class="form-control" placeholder="News Title" required>
+            </div>
+            <div class="mb-3">
+              <textarea id="newsContent" class="form-control" placeholder="News Content" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Publish</button>
+          </form>
+          <hr />
+
+          <!-- Logs Table -->
+          <h4>Employee Time Logs</h4>
+          <table class="table table-striped mb-4">
+            <thead>
+              <tr>
+                <th>Log ID</th>
+                <th>Username</th>
+                <th>Clock In</th>
+                <th>Clock Out</th>
+              </tr>
+            </thead>
+            <tbody id="logsTable"></tbody>
+          </table>
+          <hr />
+
+          <h4>All Published News</h4>
+          <div id="newsContainer"></div>
+        </div>
+      </div> <!-- End Main Admin Panel Card -->
+
+      <!-- User List Card - Separate Card -->
+      <div class="card shadow user-list-card">  <!-- Added user-list-card class -->
+        <div class="card-header bg-dark text-white"> <!-- Changed to bg-dark -->
+          <h4>Registered Users</h4>
+        </div>
+        <div class="card-body">
+          <ul id="usersList" class="list-group">
+            <!-- Users will be loaded here -->
+          </ul>
+        </div>
+      </div> <!-- End User List Card -->
+
+    </div>
+
+    <!-- Edit News Modal - NEW MODAL -->
+    <div class="modal fade" id="editNewsModal" tabindex="-1" style="z-index: 1055;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit News</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editNewsForm">
+              <input type="hidden" id="editNewsId">
+              <div class="mb-3">
+                <label for="editNewsTitle" class="form-label">Title</label>
+                <input type="text" class="form-control" id="editNewsTitle" required>
+              </div>
+              <div class="mb-3">
+                <label for="editNewsContent" class="form-label">Content</label>
+                <textarea class="form-control" id="editNewsContent" rows="3" required></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="saveEditNewsBtn">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Edit News Modal -->
+
+  </div>
+
+  <script>
+    let currentAdminUserId = null; // Variable to store current admin user ID
+    let isDarkMode = false; // Track dark mode state
+
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return "N/A";
+      const d = new Date(dateString);
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const year = d.getFullYear();
+      const hours = String(d.getHours()).padStart(2, "0");
+      const minutes = String(d.getMinutes()).padStart(2, "0");
+      const seconds = String(d.getSeconds()).padStart(2, "0");
+      return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
+    }
+
+    // Load logs
+    function loadLogs() {
+      fetch("/api/logs")
+        .then(res => res.json())
+        .then(data => {
+          const logsTable = document.getElementById("logsTable");
+          logsTable.innerHTML = "";
+          data.logs.forEach(log => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${log.id}</td>
+              <td>${log.username}</td>
+              <td>${formatDate(log.clockIn)}</td>
+              <td>${formatDate(log.clockOut)}</td>
+            `;
+            logsTable.appendChild(row);
+          });
+        })
+        .catch(err => console.error("Error loading logs:", err));
+    }
+
+    // Load published news
+    function loadNewsAdmin() {
+      fetch("/api/news")
+        .then(res => res.json())
+        .then(data => {
+          const newsContainer = document.getElementById("newsContainer");
+          newsContainer.innerHTML = "";
+          data.news.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "news-item border rounded p-2 mb-3";
+            div.innerHTML = `
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-1">${item.title}</h5>
+                <div class="dropdown">
+                  <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">…</button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#" onclick="editNews(${item.id})">Edit</a>  <!-- NEW EDIT BUTTON -->
+                    </li>
+                    <li>
+                      <a class="dropdown-item text-danger" href="#" onclick="deleteNews(${item.id})">Delete</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p>${item.content}</p>
+              <small class="text-muted">Published: ${formatDate(item.published_date)}</small>
+            `;
+            newsContainer.appendChild(div);
+          });
+        })
+        .catch(err => console.error("Error loading news:", err));
+    }
+
+    // Delete news
+    function deleteNews(newsId) {
+      if (confirm("Are you sure you want to delete this news item?")) {
+        fetch(`/api/news/${newsId}`, { method: "DELETE" })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              alert("News deleted.");
+              loadNewsAdmin();
+            } else {
+              alert("Error: " + data.error);
+            }
+          })
+          .catch(err => console.error("Delete news error:", err));
+      }
+    }
+
+    // Load users
+    function loadUsers() {
+      fetch("/api/users")
+        .then(res => res.json())
+        .then(data => {
+          const usersList = document.getElementById("usersList");
+          usersList.innerHTML = ""; // Clear existing
+          data.users.forEach(user => {
+            const li = document.createElement("li");
+            li.className = "list-group-item d-flex justify-content-between align-items-center";
+            if (user.approved === 0) {
+              li.classList.add('user-pending'); // Add class for pending users
+            }
+            let actionHTML = ``; // Initialize actionHTML
+            if (user.id !== currentAdminUserId) { // **IMPORTANT: Replace 1 with actual current admin user ID retrieval**
+              actionHTML = `
+                <div class="dropdown">
+                  <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">…</button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    ${user.approved === 0 ? `
+                      <li><a class="dropdown-item text-success" href="#" onclick="approveUser(${user.id})">Approve</a></li>
+                      <li><a class="dropdown-item text-danger" href="#" onclick="rejectUser(${user.id})">Reject</a></li>
+                      <div class="dropdown-divider"></div> ` : ``}
+                    ${user.isAdmin ? `<li><a class="dropdown-item" href="#" onclick="revokeAdmin(${user.id})">Revoke Admin</a></li>` : `<li><a class="dropdown-item" href="#" onclick="grantAdmin(${user.id})">Grant Admin</a></li>`}
+                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteUser(${user.id})">Delete User</a></li>
+                  </ul>
+                </div>
+              `;
+            } else {
+              actionHTML = `<span title="Current Admin">...</span>`; // Changed to ellipses with tooltip
+            }
+
+            li.innerHTML = `
+              <span>${user.username} ${user.id === currentAdminUserId ? '<b>(me)</b>' : ''} ${user.isAdmin ? "(Admin)" : "(User)"} ${user.approved === 0 ? '(Pending Approval)' : ''}</span>
+              <div>${actionHTML}</div>
+            `;
+            usersList.appendChild(li);
+          });
+        })
+        .catch(err => console.error("Error loading users:", err));
+    }
+
+    // Approve user function - New function
+    function approveUser(userId) {
+      fetch(`/api/users/${userId}/approve`, { method: "PUT" })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert(`User ID ${userId} approved!`);
+            loadUsers(); // Reload user list
+          } else {
+            alert("Error approving user: " + data.error);
+          }
+        })
+        .catch(err => console.error("Approve user error:", err));
+    }
+
+    // Reject user function - New function
+    function rejectUser(userId) {
+      if(confirm("Are you sure you want to reject and delete this user? This action cannot be undone.")){
+        fetch(`/api/users/${userId}/reject`, { method: "DELETE" })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              alert(`User ID ${userId} rejected and deleted.`);
+              loadUsers(); // Reload user list
+            } else {
+              alert("Error rejecting user: " + data.error);
+            }
+          })
+          .catch(err => console.error("Reject user error:", err));
+      }
+    }
+
+
+    // Grant Admin function
+    function grantAdmin(userId) {
+      fetch(`/api/users/${userId}/grant-admin`, { method: "PUT" })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert(`Admin role granted to user ID ${userId}`);
+            loadUsers(); // Reload user list
+          } else {
+            alert("Error granting admin role: " + data.error);
+          }
+        })
+        .catch(err => console.error("Grant admin error:", err));
+    }
+
+    // Revoke Admin function
+    function revokeAdmin(userId) {
+      fetch(`/api/users/${userId}/revoke-admin`, { method: "PUT" })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert(`Admin role revoked from user ID ${userId}`);
+            loadUsers(); // Reload user list
+          } else {
+            alert("Error revoking admin role: " + data.error);
+          }
+        })
+        .catch(err => console.error("Revoke admin error:", err));
+    }
+
+
+    // Delete user
+    function deleteUser(userId) {
+      if (confirm("Are you sure you want to delete this user?")) {
+        fetch(`/api/users/${userId}`, { method: "DELETE" })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              alert("User deleted successfully!");
+              loadUsers(); // Reload user list
+            } else {
+              alert("Error deleting user: " + data.error);
+            }
+          })
+          .catch(err => console.error("Delete user error:", err));
+      }
+    }
+
+    // EDIT NEWS FUNCTION - NEW FUNCTION
+    function editNews(newsId) {
+      fetch(`/api/news/${newsId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const newsItem = data.newsItem;
+            document.getElementById("editNewsId").value = newsItem.id;
+            document.getElementById("editNewsTitle").value = newsItem.title;
+            document.getElementById("editNewsContent").value = newsItem.content;
+            const editNewsModal = new bootstrap.Modal(document.getElementById('editNewsModal'));
+            editNewsModal.show(); // Show the edit modal
+          } else {
+            alert("Error fetching news for edit: " + data.error);
+          }
+        })
+        .catch(err => console.error("Error fetching news item:", err));
+    }
+
+    // SAVE EDITED NEWS FUNCTION - NEW FUNCTION
+    document.getElementById('saveEditNewsBtn').addEventListener('click', function() {
+      const newsId = document.getElementById("editNewsId").value;
+      const title = document.getElementById("editNewsTitle").value.trim();
+      const content = document.getElementById("editNewsContent").value.trim();
+
+      if (!title || !content) {
+        alert("Title and content cannot be empty.");
+        return;
+      }
+
+      fetch(`/api/news/${newsId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert("News updated successfully!");
+            loadNewsAdmin(); // Reload news list
+            const editNewsModal = bootstrap.Modal.getInstance(document.getElementById('editNewsModal'));
+            editNewsModal.hide(); // Hide the modal after successful edit
+          } else {
+            alert("Error updating news: " + data.error);
+          }
+        })
+        .catch(err => console.error("Error updating news item:", err));
+      });
+
+
+    // DOMContentLoaded
+    document.addEventListener("DOMContentLoaded", function() {
+      // Fetch current user data first
+      fetch("/api/current-user")
+        .then(res => res.json())
+        .then(data => {
+          currentAdminUserId = data.user.id; // Store current admin user ID
+          loadLogs();
+          loadNewsAdmin();
+          loadUsers(); // Now load users after getting current user ID
+
+          // Check for dark mode preference in local storage and apply
+          const storedDarkMode = localStorage.getItem('darkMode');
+          if (storedDarkMode === 'true') {
+            enableDarkMode();
+            document.getElementById('darkModeSwitch').checked = true;
+          }
+        })
+        .catch(err => {
+          console.error("Error fetching current user:", err);
+          alert("Error loading admin panel data. Please refresh."); // Handle error gracefully
+        });
+
+      const resetLogsBtn = document.getElementById("resetLogsBtn");
+      resetLogsBtn.addEventListener("click", function() {
+        if (confirm("Really reset all logs?")) {
+          fetch("/reset-logs")
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                alert(data.message);
+                loadLogs(); // Reload logs
+              } else {
+                alert("Error: " + data.error);
+              }
+            })
+            .catch(err => console.error("Reset logs error:", err));
+        }
+      });
+
+      const logoutBtn = document.getElementById("logoutBtn");
+      logoutBtn.addEventListener("click", function() {
+        fetch("/logout")
+          .then(() => window.location.href = "/login.html")
+          .catch(err => console.error("Logout error:", err));
+      });
+
+      const newsForm = document.getElementById("newsForm");
+      newsForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const title = document.getElementById("newsTitle").value.trim();
+        const content = document.getElementById("newsContent").value.trim();
+        if (title && content) {
+          fetch("/publish-news", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, content })
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                alert("News published!");
+                newsForm.reset();
+                loadNewsAdmin();
+              } else {
+                alert("Error: " + data.error);
+              }
+            })
+            .catch(err => console.error("Publish news error:", err));
+        }
+      });
+
+      // Initialize Edit News Modal (Bootstrap - already in place, just for clarity)
+      const editNewsModalElement = document.getElementById('editNewsModal');
+      editNewsModalElement.addEventListener('hidden.bs.modal', function () {
+        // Optional: actions to perform when modal is closed, like clearing form fields if needed.
+      });
+
+
+      // **SETTINGS PANEL LOGIC - NEW**
+      const settingsBtn = document.getElementById('settingsBtn');
+      const settingsPanel = document.getElementById('settingsPanel');
+      const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+      const pageContent = document.getElementById('pageContent'); // Get page-content element
+
+      settingsBtn.addEventListener('click', function() {
+        settingsPanel.classList.add('open'); // Open settings panel
+        pageContent.classList.add('settings-open'); // Add class to shift main content
+      });
+      closeSettingsBtn.addEventListener('click', function() {
+        settingsPanel.classList.remove('open'); // Close settings panel
+        pageContent.classList.remove('settings-open'); // Remove class to shift back main content
+      });
+
+      // **DARK MODE TOGGLE LOGIC - NEW**
+      const darkModeSwitch = document.getElementById('darkModeSwitch');
+      darkModeSwitch.addEventListener('change', function() {
+        if (this.checked) {
+          enableDarkMode();
+          localStorage.setItem('darkMode', 'true'); // Store preference
+        } else {
+          disableDarkMode();
+          localStorage.setItem('darkMode', 'false'); // Store preference
+        }
+      });
+
+      function enableDarkMode() {
+        isDarkMode = true;
+        document.body.classList.add('dark-mode');
+        settingsPanel.classList.add('dark-mode');
+        document.querySelectorAll('.card').forEach(card => card.classList.add('dark-mode'));
+        document.querySelectorAll('.card-header.dark-mode.bg-dark.text-white').forEach(header => header.classList.add('dark-mode'));
+        document.querySelectorAll('.table').forEach(table => table.classList.add('dark-mode'));
+        document.querySelectorAll('.list-group').forEach(listGroup => listGroup.classList.add('dark-mode'));
+        document.querySelectorAll('.news-item').forEach(newsItem => newsItem.classList.add('dark-mode'));  //NEW
+        document.querySelectorAll('.dropdown-menu').forEach(dropDownMenu => dropDownMenu.classList.add('dark-mode'));
+
+      }
+
+      function disableDarkMode() {
+        isDarkMode = false;
+        document.body.classList.remove('dark-mode');
+        settingsPanel.classList.remove('dark-mode');
+        document.querySelectorAll('.card').forEach(card => card.classList.remove('dark-mode'));
+        document.querySelectorAll('.card-header.bg-dark.text-white').forEach(header => header.classList.remove('dark-mode'));
+        document.querySelectorAll('.table').forEach(table => table.classList.remove('dark-mode'));
+        document.querySelectorAll('.list-group').forEach(listGroup => listGroup.classList.remove('dark-mode'));
+        document.querySelectorAll('.news-item').forEach(newsItem => newsItem.classList.remove('dark-mode'));//NEW
+        document.querySelectorAll('.dropdown-menu').forEach(dropDownMenu => dropDownMenu.classList.remove('dark-mode'));
+
+      }
+
+
+      // **CHANGE PASSWORD FORM LOGIC - NEW**
+      const passwordForm = document.getElementById('passwordForm');
+      passwordForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const passwordMessage = document.getElementById('passwordMessage');
+
+        fetch('/api/user/password', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentPassword, newPassword, confirmPassword })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            passwordMessage.textContent = data.message;
+            passwordMessage.className = 'text-success'; // Green color for success
+            passwordForm.reset(); // Clear the form after success
+          } else {
+            passwordMessage.textContent = data.error;
+            passwordMessage.className = 'text-danger'; // Red color for error
+          }
+        })
+        .catch(err => {
+          console.error("Error changing password:", err);
+          passwordMessage.textContent = "An unexpected error occurred.";
+          passwordMessage.className = 'text-danger';
+        });
+      });
+
+
+    });
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <!-- Swirling BG if used -->
+  <script src="js/bgEffect.js"></script>
+</body>
+</html>

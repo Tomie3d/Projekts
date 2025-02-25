@@ -1,0 +1,21 @@
+#bgCanvas {
+  position: fixed; /* Fixed positioning is generally best for full-screen backgrounds */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;     /* Places the canvas behind other content */
+  pointer-events: none; /* Makes the canvas click-through */
+}
+
+.page-content {
+  position: relative; /* Needed for z-index to work properly on children */
+  z-index: 1;       /* Ensures content is above the canvas */
+}
+
+body {
+  margin: 0;        /* Remove default body margins */
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+  font-family: 'Roboto', sans-serif;  /* Use the Roboto font */
+  background-color: #0a0f1e;       /* Your desired background color */
+}

@@ -1,0 +1,103 @@
+/* css/style.css */
+
+/* Ensure full viewport height with no margins, transparent background, and white text */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    color: #fff;
+    overflow-x: hidden;
+  }
+  
+  /* Canvas covers the full page and stays behind content */
+  #bgCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+  
+  /* Hide the overlay since we want a clean, transparent look */
+  .overlay {
+    display: none;
+  }
+  
+  /*
+    Make .page-content fill the viewport height,
+    and use flexbox to stretch the container/card
+  */
+  .page-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Fill the entire viewport */
+    background: transparent;
+    z-index: 2;
+    margin: 0; /* Remove extra margins */
+    padding: 0; /* Remove extra padding */
+  }
+  
+  /* The container now also stretches to fill the height,
+     and we add some padding for spacing */
+  .page-content .container {
+    flex: 1; /* Let the container fill all remaining vertical space */
+    display: flex;
+    align-items: flex-start; /* or center, if you want vertical centering */
+    justify-content: center; /* horizontally center the card if desired */
+    padding: 2rem;
+  }
+  
+  /* Redesigned card with a sleek transparent background and blur effect,
+     set to fill the container’s height if you want it from top to bottom. */
+  .card {
+    width: 100%;
+    max-width: 1200px; /* Limit max width if desired */
+    background: rgba(0, 0, 0, 0.3);
+    border: none;
+    backdrop-filter: blur(10px);
+    color: #fff; /* Force card text to white */
+    /* If you want the card to stretch fully: */
+    height: 100%;
+  }
+  
+  /* Header uses an accent color inspired by the JS colors (faded cyan/teal) */
+  .card-header {
+    background: rgba(0, 150, 150, 0.8);
+    border: none;
+    color: #fff;
+  }
+  
+  /* Ensure headings, paragraphs, etc., are white */
+  h3, h4, h5, p, label, small {
+    color: #fff;
+  }
+  
+  /* Settings panel with a semi-transparent dark background */
+  .settings-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 300px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    padding: 20px;
+    z-index: 1001;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .settings-panel.open {
+    transform: translateX(0);
+  }
+  
+  .settings-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  }

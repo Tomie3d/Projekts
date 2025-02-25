@@ -1,0 +1,143 @@
+Employee Time Tracking System - User Guide
+
+1. Introduction
+
+This guide explains how to use the Employee Time Tracking System. This system allows you to easily track your work hours.
+
+2. Getting Started
+
+Accessing the System: Open a web browser and navigate to the application's URL (provided by your administrator). You should see the landing page.
+
+Registration:
+
+Click the "Get Started" button on the landing page, which will take you to the login page.
+
+Click the "Register here" link on the login page.
+
+Fill in the registration form with your desired username, a strong password, and confirm the password.
+
+Click the "Register" button.
+
+You will be redirected to the login page and see a message indicating that your registration was successful. Important: You will need to wait for an administrator to approve your account before you can log in.
+
+Logging In:
+
+Go to the login page (you can reach it from the landing page by clicking "Get Started").
+
+Enter your registered username and password.
+
+Click the "Login" button.
+
+If your credentials are correct and your account has been approved by an administrator, you will be redirected to the dashboard (or the admin panel if you are an administrator).
+
+If you see an error message, double-check your username and password. If you still can't log in, your account might not be approved yet.
+
+3. Using the Dashboard (Regular Users)
+
+Clocking In:
+
+After logging in, you'll be on the dashboard.
+
+Click the green "Clock In" button to start recording your work time.
+
+You should see a success message.
+
+Clocking Out:
+
+On the dashboard, click the red "Clock Out" button to stop recording your work time.
+
+You should see a success message.
+
+Viewing News:
+
+The "Latest News" section on the dashboard displays news articles published by your administrator.
+
+Logging Out:
+
+Click the "Logout" button to securely exit the system.
+
+Settings Panel:
+
+Click the "Settings" button to open the settings panel.
+
+Change Password:
+
+Enter your current password.
+
+Enter your desired new password.
+
+Confirm your new password by entering it again.
+
+Click "Change Password".
+
+You'll see a success or error message.
+
+Dark Mode: You can switch between light mode and dark mode using the "Dark Mode" switch in the settings panel.
+
+4. Using the Admin Panel (Administrators)
+
+Accessing the Admin Panel: Log in with an administrator account. You will be automatically redirected to the admin panel.
+
+Managing Users:
+
+User List: The "Registered Users" section shows a list of all users.
+
+Approve/Reject: For pending users (marked as "Pending Approval"), you can click the "Approve" or "Reject" links to approve or reject their registration. Rejected users are deleted.
+
+Grant/Revoke Admin: Click "Grant Admin" to give a user administrator privileges. Click "Revoke Admin" to remove administrator privileges. You cannot revoke your own admin status.
+
+Delete User: Click "Delete User" to permanently remove a user account. You cannot delete your own account.
+
+Viewing Time Logs:
+
+The "Employee Time Logs" section displays a table of all recorded clock-in and clock-out times. The table includes:
+
+Log ID: A unique identifier for each log entry.
+
+Username: The username of the employee.
+
+Clock In: The date and time the employee clocked in.
+
+Clock Out: The date and time the employee clocked out (or "N/A" if they are still clocked in).
+
+Resetting Logs:
+
+Click the "Reset Logs" button to permanently delete all time log entries. This action cannot be undone.
+
+Publishing News:
+
+Publish News Form: Use the "Publish News" form to create news articles.
+
+News Title: Enter a title for the news article.
+
+News Content: Enter the content of the news article.
+
+Click the "Publish" button to post the article.
+
+All Published News: This is where all news articles are displayed
+
+Edit: You can press the edit button in the dropdown and edit the specific news
+
+Delete: You can press the delete button in the dropdown and delete the specific news
+
+Logging Out:
+
+Click the "Logout" button to securely exit the admin panel.
+
+Settings Panel:
+
+Click the "Settings" button to open the settings panel.
+
+Change Password:
+
+Enter your current password.
+
+Enter your desired new password.
+
+Confirm your new password by entering it again.
+
+Click "Change Password".
+
+You'll see a success or error message.
+
+Dark Mode: You can switch between light mode and dark mode using the "Dark Mode" switch in the settings panel.

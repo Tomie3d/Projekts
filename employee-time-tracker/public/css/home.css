@@ -1,0 +1,232 @@
+/* public/css/home.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  overflow: hidden; /* Keep overflow hidden if you want the background effect */
+}
+
+/* Hero section styling for index.html (if you still need these styles in home.css) */
+.hero {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+  padding: 0 1rem;
+}
+
+.hero-content h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.btn-primary {
+  background-color: #5563DE;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #4453c8;
+  transform: translateY(-2px);
+}
+
+/* --- Admin Panel Styles --- */
+
+/* Global Styles for Admin Panel (if you want to apply these broadly) */
+body { /* Consider if you want to broadly apply these or make more specific */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa; /* Default light background */
+  color: #212529; /* Default dark text */
+  overflow-y: auto; /* Allow vertical scrolling for admin panel content */
+  overflow-x: hidden; /* Hide horizontal scrollbar if not needed */
+}
+
+/* Card customizations */
+.card {
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 20px; /* Add default margin for cards */
+}
+
+.card-header {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* Footer styling for the login card -  (Check if this is still relevant for admin panel) */
+.card-footer {
+  font-size: 0.85rem;
+}
+
+/* Alert styling adjustments - (Check if this is still relevant for admin panel) */
+.alert {
+  font-weight: 500;
+}
+
+/* Additional spacing for buttons */
+.btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+
+/* --- Dark Mode Styles --- */
+body.dark-mode, .settings-panel.dark-mode {
+  background-color: #343a40; /* Dark background */
+  color: #fff; /* White text */
+}
+.card.dark-mode {
+  background-color: #495057; /* Darker card background */
+  color: #fff;
+}
+.card-header.dark-mode.bg-dark.text-white {
+  background-color: #212529 !important; /* Even darker card header */
+}
+
+/* Forcefully apply dark mode table styles */
+.card.dark-mode .card-body .table,
+.card.dark-mode .card-body .table th,
+.card.dark-mode .card-body .table td {
+  /* color: #fff !important;  REMOVED THIS LINE - to prevent white text on table */
+  border-color: #6c757d !important;
+}
+
+.card.dark-mode .card-body .table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(255,255,255,.05) !important; /* Force background */
+}
+
+.list-group.dark-mode .list-group-item {
+  background-color: #495057; /* Darker list item background */
+  color: #fff;
+  border-color: #6c757d;
+}
+
+/* Light mode table text color */
+.card .card-body .table th,
+.card .card-body .table td {
+  color: #212529; /* Set text color to a dark color for light mode */
+}
+
+
+/* --- Admin Panel Page Specific Styles --- */
+.page-content {
+  position: relative;
+  z-index: 1;
+  margin-right: 0;
+  transition: margin-right 0.3s ease-in-out;
+}
+
+.page-content.settings-open {
+  margin-right: 300px;
+}
+
+/* --- Separate Cards Layout for Admin Panel --- */
+.admin-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px; /* Add padding around the container */
+}
+
+.main-admin-card {
+  flex-grow: 1;
+}
+
+.user-list-card {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.user-pending {
+  color: gray;
+  font-style: italic;
+}
+
+/* --- Settings Panel Styles --- */
+.settings-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 300px;
+  background-color: #f8f9fa; /* Light background for settings panel */
+  box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+  padding: 20px;
+  z-index: 1001;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.settings-panel.open {
+  transform: translateX(0);
+}
+
+.dark-mode-toggle-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.dark-mode-toggle-label {
+  margin-right: 10px;
+}
+
+/* --- Style for smaller dropdown buttons in User List --- */
+#usersList .dropdown-toggle {
+  padding: 0.25rem 0.5rem; /* Reduce vertical and horizontal padding */
+  font-size: 0.9rem;      /* Slightly smaller font size */
+  line-height: 1.2;       /* Adjust line height if needed */
+  min-width: auto;        /* Reset min-width if Bootstrap or other styles are setting it */
+  height: auto;           /* Reset fixed height if any */
+}
+
+/* Optional: Further adjust based on appearance */
+/* If the dropdown arrow is still too big */
+#usersList .dropdown-toggle::after {
+  border-top-width: 0.3em;   /* Reduce arrow size */
+  border-bottom-width: 0.3em; /* Reduce arrow size */
+  margin-left: 0.15em;      /* Adjust arrow spacing */
+}
+
+/* If you want to make the button itself even smaller and rounder */
+#usersList .dropdown-toggle {
+  border-radius: 0.2rem;     /* Make button corners more rounded */
+  padding: 0.1rem 0.4rem;   /* Further reduce padding if needed */
+}
