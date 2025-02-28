@@ -3,41 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <title>Login - Employee Time Tracking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/home.css"> <!-- Keep this if you have shared styles -->
+  <link rel="stylesheet" href="css/home.css">
   <!-- Background CSS -->
   <link rel="stylesheet" href="css/bg.css">
   <style>
-    /* Add this style block within the <head> */
+    /* Darkening Overlay */
     .overlay {
-      position: fixed; /* or absolute, depending on your layout */
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5); /* Adjust the alpha (0.5) for darkness */
-      z-index: 1; /* Ensure it's above the canvas but below the content */
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1;
     }
-
+    /* Page Content positioned above overlay */
     .page-content {
-      position: relative; /*  Important:  Allows the z-index to work correctly */
-      z-index: 2; /*  Ensure it's above the overlay */
+      position: relative;
+      z-index: 2;
+    }
+    /* Alert Container positioned at the top center */
+    #alert-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      width: 90%;
+      max-width: 500px;
     }
   </style>
 </head>
 <body>
   <!-- Background Canvas -->
   <canvas id="bgCanvas"></canvas>
-
   <!-- Darkening Overlay -->
   <div class="overlay"></div>
-
+  <!-- Alert Container -->
+  <div id="alert-container"></div>
   <!-- Page Content -->
-  <div class="page-content">
+  <main class="page-content">
     <div class="container vh-100 d-flex align-items-center">
       <div class="row w-100">
         <div class="col-md-4 mx-auto">
@@ -46,22 +57,21 @@
               <h3>Employee Login</h3>
             </div>
             <div class="card-body">
-              <form action="/login" method="POST">
+              <form action="/login" method="POST" novalidate>
                 <div class="mb-3">
-                  <label for="username" class="form-label">Username:</label>
-                  <input type="text" name="username" id="username" class="form-control" required>
+                  <label for="username" class="form-label">Username</label>
+                  <input type="text" name="username" id="username" class="form-control" placeholder="Enter username" required>
                 </div>
                 <div class="mb-3">
-                  <label for="password" class="form-label">Password:</label>
-                  <input type="password" name="password" id="password" class="form-control" required>
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" name="password" id="password" class="form-control" placeholder="Enter password" required>
                 </div>
                 <div class="d-grid">
                   <button type="submit" class="btn btn-primary">Login</button>
                 </div>
-                <p class="text-center">
+                <p class="text-center mt-3">
                   Don't have an account? <a href="register.html">Register here</a>
                 </p>
-
               </form>
             </div>
             <div class="card-footer text-center">
@@ -71,29 +81,47 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Background Effect JS -->
   <script src="js/bgEffect.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const error = urlParams.get('error');
-            const registered = urlParams.get('registered');
-            const needsApproval = urlParams.get('needsApproval');
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get('error');
+      const registered = urlParams.get('registered');
+      const needsApproval = urlParams.get('needsApproval');
+      const alertContainer = document.getElementById('alert-container');
+      
+      let alertMessage = '';
+      let alertType = 'danger'; // default alert type for errors
 
+      if (error === 'invalid') {
+        alertMessage = 'Invalid username or password.';
+      } else if (error === 'notApproved') {
+        alertMessage = 'Your account has not been approved by an administrator yet.';
+      } else if (registered === '1' && needsApproval === '1') {
+        alertMessage = 'Registration successful! Please wait for administrator approval.';
+        alertType = 'success';
+      }
 
-            if (error === 'invalid') {
-                alert('Invalid username or password.');
-            } else if (error === 'notApproved') {
-                alert('Your account has not been approved by an administrator yet.');
-            }
-
-            if(registered === '1' && needsApproval === "1"){
-                alert("Registration successful! Please wait for administrator approval.");
-            }
-        });
-    </script>
+      if (alertMessage) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${alertType} alert-dismissible fade show`;
+        alertDiv.role = 'alert';
+        alertDiv.innerHTML = `
+          ${alertMessage}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        alertContainer.appendChild(alertDiv);
+        // Auto-dismiss the alert after 5 seconds
+        setTimeout(() => {
+          alertDiv.classList.remove('show');
+          alertDiv.classList.add('hide');
+        }, 5000);
+      }
+    });
+  </script>
 </body>
 </html>

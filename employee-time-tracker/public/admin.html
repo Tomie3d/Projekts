@@ -2,26 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin Panel - Employee Time Logs</title>
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="css/bg.css">
   <link rel="stylesheet" href="css/admin.css">  <!-- Link to the new admin.css -->
 </head>
 <body>
-  <!-- swirling ASCII -->
+  <!-- Background Canvas and Overlay -->
   <canvas id="bgCanvas"></canvas>
-    <div class="overlay"></div>
+  <div class="overlay"></div>
 
-  <button id="settingsBtn" class="btn btn-secondary settings-button">Settings</button>
+  <!-- Settings Button -->
+  <button id="settingsBtn" class="btn btn-secondary settings-button" aria-label="Open Settings">
+    Settings
+  </button>
 
-  <div class="settings-panel" id="settingsPanel"> <!-- Settings Panel - initially hidden -->
-    <h4>Settings</h4>
-    <hr/>
-
+  <!-- Settings Panel -->
+  <aside class="settings-panel" id="settingsPanel" aria-labelledby="settingsHeading">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 id="settingsHeading">Settings</h4>
+      <button id="closeSettingsBtn" class="btn btn-secondary" aria-label="Close Settings">&times;</button>
+    </div>
+    <hr>
     <!-- Dark Mode Toggle -->
     <div class="dark-mode-toggle-container">
       <span class="dark-mode-toggle-label">Dark Mode:</span>
@@ -30,8 +34,7 @@
         <label class="form-check-label" for="darkModeSwitch"></label>
       </div>
     </div>
-    <hr/>
-
+    <hr>
     <!-- Change Password Form -->
     <h5>Change Password</h5>
     <form id="passwordForm">
@@ -50,27 +53,21 @@
       <button type="submit" class="btn btn-primary">Change Password</button>
       <div id="passwordMessage" class="mt-2"></div>
     </form>
-    <hr/>
-    <button id="closeSettingsBtn" class="btn btn-secondary">Close Settings</button>
-  </div>
+  </aside>
 
-
-  <div class="page-content" id="pageContent">  <!-- Added id="pageContent" to page-content -->
-    <!-- Floating Users List - REMOVED from here -->
-
-    <div class="container mt-5 admin-page-container">  <!-- Added admin-page-container class to container -->
-
+  <!-- Main Page Content -->
+  <main class="page-content" id="pageContent">
+    <div class="container mt-5 admin-page-container">
       <!-- Main Admin Panel Card -->
-      <div class="card shadow main-admin-card">  <!-- Added main-admin-card class -->
-        <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+      <section class="card shadow main-admin-card mb-4">
+        <header class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
           <h3>Admin Panel</h3>
           <div>
             <button id="resetLogsBtn" class="btn btn-warning me-2">Reset Logs</button>
             <button id="logoutBtn" class="btn btn-danger">Logout</button>
           </div>
-        </div>
+        </header>
         <div class="card-body">
-
           <!-- Publish News Form -->
           <h4>Publish News</h4>
           <form id="newsForm" class="mb-4">
@@ -82,48 +79,48 @@
             </div>
             <button type="submit" class="btn btn-primary">Publish</button>
           </form>
-          <hr />
-
+          <hr>
           <!-- Logs Table -->
           <h4>Employee Time Logs</h4>
-          <table class="table table-striped mb-4">
-            <thead>
-              <tr>
-                <th>Log ID</th>
-                <th>Username</th>
-                <th>Clock In</th>
-                <th>Clock Out</th>
-              </tr>
-            </thead>
-            <tbody id="logsTable"></tbody>
-          </table>
-          <hr />
-
+          <div class="table-responsive">
+            <table class="table table-striped mb-4">
+              <thead>
+                <tr>
+                  <th>Log ID</th>
+                  <th>Username</th>
+                  <th>Clock In</th>
+                  <th>Clock Out</th>
+                </tr>
+              </thead>
+              <tbody id="logsTable"></tbody>
+            </table>
+          </div>
+          <hr>
+          <!-- Published News List -->
           <h4>All Published News</h4>
           <div id="newsContainer"></div>
         </div>
-      </div> <!-- End Main Admin Panel Card -->
+      </section>
 
-      <!-- User List Card - Separate Card -->
-      <div class="card shadow user-list-card">  <!-- Added user-list-card class -->
-        <div class="card-header bg-dark text-white"> <!-- Changed to bg-dark -->
+      <!-- User List Card -->
+      <section class="card shadow user-list-card">
+        <header class="card-header bg-dark text-white">
           <h4>Registered Users</h4>
-        </div>
+        </header>
         <div class="card-body">
           <ul id="usersList" class="list-group">
-            <!-- Users will be loaded here -->
+            <!-- Users will be loaded here dynamically -->
           </ul>
         </div>
-      </div> <!-- End User List Card -->
-
+      </section>
     </div>
 
-    <!-- Edit News Modal - NEW MODAL -->
-    <div class="modal fade" id="editNewsModal" tabindex="-1" style="z-index: 1055;">
+    <!-- Edit News Modal -->
+    <div class="modal fade" id="editNewsModal" tabindex="-1" aria-labelledby="editNewsModalLabel" aria-hidden="true" style="z-index: 1055;">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Edit News</h5>
+            <h5 class="modal-title" id="editNewsModalLabel">Edit News</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -146,28 +143,24 @@
         </div>
       </div>
     </div>
-    <!-- End Edit News Modal -->
+  </main>
 
-  </div>
-
+  <!-- Scripts -->
+  <script src="js/bgEffect.js"></script>
+  <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    let currentAdminUserId = null; // Variable to store current admin user ID
-    let isDarkMode = false; // Track dark mode state
+    let currentAdminUserId = null;
+    let isDarkMode = false;
 
-    // Format date
+    // Utility to format dates
     function formatDate(dateString) {
       if (!dateString) return "N/A";
       const d = new Date(dateString);
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      const year = d.getFullYear();
-      const hours = String(d.getHours()).padStart(2, "0");
-      const minutes = String(d.getMinutes()).padStart(2, "0");
-      const seconds = String(d.getSeconds()).padStart(2, "0");
-      return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
+      return `${String(d.getMonth()+1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
     }
 
-    // Load logs
+    // Load logs, news, and users
     function loadLogs() {
       fetch("/api/logs")
         .then(res => res.json())
@@ -188,7 +181,6 @@
         .catch(err => console.error("Error loading logs:", err));
     }
 
-    // Load published news
     function loadNewsAdmin() {
       fetch("/api/news")
         .then(res => res.json())
@@ -204,12 +196,8 @@
                 <div class="dropdown">
                   <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">…</button>
                   <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a class="dropdown-item" href="#" onclick="editNews(${item.id})">Edit</a>  <!-- NEW EDIT BUTTON -->
-                    </li>
-                    <li>
-                      <a class="dropdown-item text-danger" href="#" onclick="deleteNews(${item.id})">Delete</a>
-                    </li>
+                    <li><a class="dropdown-item" href="#" onclick="editNews(${item.id})">Edit</a></li>
+                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteNews(${item.id})">Delete</a></li>
                   </ul>
                 </div>
               </div>
@@ -222,38 +210,17 @@
         .catch(err => console.error("Error loading news:", err));
     }
 
-    // Delete news
-    function deleteNews(newsId) {
-      if (confirm("Are you sure you want to delete this news item?")) {
-        fetch(`/api/news/${newsId}`, { method: "DELETE" })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              alert("News deleted.");
-              loadNewsAdmin();
-            } else {
-              alert("Error: " + data.error);
-            }
-          })
-          .catch(err => console.error("Delete news error:", err));
-      }
-    }
-
-    // Load users
     function loadUsers() {
       fetch("/api/users")
         .then(res => res.json())
         .then(data => {
           const usersList = document.getElementById("usersList");
-          usersList.innerHTML = ""; // Clear existing
+          usersList.innerHTML = "";
           data.users.forEach(user => {
             const li = document.createElement("li");
-            li.className = "list-group-item d-flex justify-content-between align-items-center";
-            if (user.approved === 0) {
-              li.classList.add('user-pending'); // Add class for pending users
-            }
-            let actionHTML = ``; // Initialize actionHTML
-            if (user.id !== currentAdminUserId) { // **IMPORTANT: Replace 1 with actual current admin user ID retrieval**
+            li.className = "list-group-item d-flex justify-content-between align-items-center" + (user.approved === 0 ? " user-pending" : "");
+            let actionHTML = "";
+            if (user.id !== currentAdminUserId) {
               actionHTML = `
                 <div class="dropdown">
                   <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">…</button>
@@ -261,16 +228,19 @@
                     ${user.approved === 0 ? `
                       <li><a class="dropdown-item text-success" href="#" onclick="approveUser(${user.id})">Approve</a></li>
                       <li><a class="dropdown-item text-danger" href="#" onclick="rejectUser(${user.id})">Reject</a></li>
-                      <div class="dropdown-divider"></div> ` : ``}
-                    ${user.isAdmin ? `<li><a class="dropdown-item" href="#" onclick="revokeAdmin(${user.id})">Revoke Admin</a></li>` : `<li><a class="dropdown-item" href="#" onclick="grantAdmin(${user.id})">Grant Admin</a></li>`}
+                      <div class="dropdown-divider"></div>
+                    ` : ""}
+                    ${user.isAdmin ? 
+                      `<li><a class="dropdown-item" href="#" onclick="revokeAdmin(${user.id})">Revoke Admin</a></li>` : 
+                      `<li><a class="dropdown-item" href="#" onclick="grantAdmin(${user.id})">Grant Admin</a></li>`
+                    }
                     <li><a class="dropdown-item text-danger" href="#" onclick="deleteUser(${user.id})">Delete User</a></li>
                   </ul>
                 </div>
               `;
             } else {
-              actionHTML = `<span title="Current Admin">...</span>`; // Changed to ellipses with tooltip
+              actionHTML = `<span title="Current Admin">...</span>`;
             }
-
             li.innerHTML = `
               <span>${user.username} ${user.id === currentAdminUserId ? '<b>(me)</b>' : ''} ${user.isAdmin ? "(Admin)" : "(User)"} ${user.approved === 0 ? '(Pending Approval)' : ''}</span>
               <div>${actionHTML}</div>
@@ -281,22 +251,21 @@
         .catch(err => console.error("Error loading users:", err));
     }
 
-    // Approve user function - New function
+    // User action functions (approve, reject, grant/revoke admin, delete)
     function approveUser(userId) {
       fetch(`/api/users/${userId}/approve`, { method: "PUT" })
         .then(res => res.json())
         .then(data => {
           if (data.success) {
             alert(`User ID ${userId} approved!`);
-            loadUsers(); // Reload user list
+            loadUsers();
           } else {
-            alert("Error approving user: " + data.error);
+            alert("Error: " + data.error);
           }
         })
         .catch(err => console.error("Approve user error:", err));
     }
 
-    // Reject user function - New function
     function rejectUser(userId) {
       if(confirm("Are you sure you want to reject and delete this user? This action cannot be undone.")){
         fetch(`/api/users/${userId}/reject`, { method: "DELETE" })
@@ -304,48 +273,43 @@
           .then(data => {
             if (data.success) {
               alert(`User ID ${userId} rejected and deleted.`);
-              loadUsers(); // Reload user list
+              loadUsers();
             } else {
-              alert("Error rejecting user: " + data.error);
+              alert("Error: " + data.error);
             }
           })
           .catch(err => console.error("Reject user error:", err));
       }
     }
 
-
-    // Grant Admin function
     function grantAdmin(userId) {
       fetch(`/api/users/${userId}/grant-admin`, { method: "PUT" })
         .then(res => res.json())
         .then(data => {
           if (data.success) {
             alert(`Admin role granted to user ID ${userId}`);
-            loadUsers(); // Reload user list
+            loadUsers();
           } else {
-            alert("Error granting admin role: " + data.error);
+            alert("Error: " + data.error);
           }
         })
         .catch(err => console.error("Grant admin error:", err));
     }
 
-    // Revoke Admin function
     function revokeAdmin(userId) {
       fetch(`/api/users/${userId}/revoke-admin`, { method: "PUT" })
         .then(res => res.json())
         .then(data => {
           if (data.success) {
             alert(`Admin role revoked from user ID ${userId}`);
-            loadUsers(); // Reload user list
+            loadUsers();
           } else {
-            alert("Error revoking admin role: " + data.error);
+            alert("Error: " + data.error);
           }
         })
         .catch(err => console.error("Revoke admin error:", err));
     }
 
-
-    // Delete user
     function deleteUser(userId) {
       if (confirm("Are you sure you want to delete this user?")) {
         fetch(`/api/users/${userId}`, { method: "DELETE" })
@@ -353,16 +317,16 @@
           .then(data => {
             if (data.success) {
               alert("User deleted successfully!");
-              loadUsers(); // Reload user list
+              loadUsers();
             } else {
-              alert("Error deleting user: " + data.error);
+              alert("Error: " + data.error);
             }
           })
           .catch(err => console.error("Delete user error:", err));
       }
     }
 
-    // EDIT NEWS FUNCTION - NEW FUNCTION
+    // News editing functions
     function editNews(newsId) {
       fetch(`/api/news/${newsId}`)
         .then(res => res.json())
@@ -373,7 +337,7 @@
             document.getElementById("editNewsTitle").value = newsItem.title;
             document.getElementById("editNewsContent").value = newsItem.content;
             const editNewsModal = new bootstrap.Modal(document.getElementById('editNewsModal'));
-            editNewsModal.show(); // Show the edit modal
+            editNewsModal.show();
           } else {
             alert("Error fetching news for edit: " + data.error);
           }
@@ -381,7 +345,6 @@
         .catch(err => console.error("Error fetching news item:", err));
     }
 
-    // SAVE EDITED NEWS FUNCTION - NEW FUNCTION
     document.getElementById('saveEditNewsBtn').addEventListener('click', function() {
       const newsId = document.getElementById("editNewsId").value;
       const title = document.getElementById("editNewsTitle").value.trim();
@@ -401,49 +364,43 @@
         .then(data => {
           if (data.success) {
             alert("News updated successfully!");
-            loadNewsAdmin(); // Reload news list
+            loadNewsAdmin();
             const editNewsModal = bootstrap.Modal.getInstance(document.getElementById('editNewsModal'));
-            editNewsModal.hide(); // Hide the modal after successful edit
+            editNewsModal.hide();
           } else {
             alert("Error updating news: " + data.error);
           }
         })
         .catch(err => console.error("Error updating news item:", err));
-      });
+    });
 
-
-    // DOMContentLoaded
+    // DOMContentLoaded and event listeners
     document.addEventListener("DOMContentLoaded", function() {
-      // Fetch current user data first
       fetch("/api/current-user")
         .then(res => res.json())
         .then(data => {
-          currentAdminUserId = data.user.id; // Store current admin user ID
+          currentAdminUserId = data.user.id;
           loadLogs();
           loadNewsAdmin();
-          loadUsers(); // Now load users after getting current user ID
-
-          // Check for dark mode preference in local storage and apply
-          const storedDarkMode = localStorage.getItem('darkMode');
-          if (storedDarkMode === 'true') {
+          loadUsers();
+          if (localStorage.getItem('darkMode') === 'true') {
             enableDarkMode();
             document.getElementById('darkModeSwitch').checked = true;
           }
         })
         .catch(err => {
           console.error("Error fetching current user:", err);
-          alert("Error loading admin panel data. Please refresh."); // Handle error gracefully
+          alert("Error loading admin panel data. Please refresh.");
         });
 
-      const resetLogsBtn = document.getElementById("resetLogsBtn");
-      resetLogsBtn.addEventListener("click", function() {
+      document.getElementById("resetLogsBtn").addEventListener("click", function() {
         if (confirm("Really reset all logs?")) {
           fetch("/reset-logs")
             .then(res => res.json())
             .then(data => {
               if (data.success) {
                 alert(data.message);
-                loadLogs(); // Reload logs
+                loadLogs();
               } else {
                 alert("Error: " + data.error);
               }
@@ -452,15 +409,13 @@
         }
       });
 
-      const logoutBtn = document.getElementById("logoutBtn");
-      logoutBtn.addEventListener("click", function() {
+      document.getElementById("logoutBtn").addEventListener("click", function() {
         fetch("/logout")
           .then(() => window.location.href = "/login.html")
           .catch(err => console.error("Logout error:", err));
       });
 
-      const newsForm = document.getElementById("newsForm");
-      newsForm.addEventListener("submit", function(e) {
+      document.getElementById("newsForm").addEventListener("submit", function(e) {
         e.preventDefault();
         const title = document.getElementById("newsTitle").value.trim();
         const content = document.getElementById("newsContent").value.trim();
@@ -474,7 +429,7 @@
             .then(data => {
               if (data.success) {
                 alert("News published!");
-                newsForm.reset();
+                e.target.reset();
                 loadNewsAdmin();
               } else {
                 alert("Error: " + data.error);
@@ -484,37 +439,32 @@
         }
       });
 
-      // Initialize Edit News Modal (Bootstrap - already in place, just for clarity)
-      const editNewsModalElement = document.getElementById('editNewsModal');
-      editNewsModalElement.addEventListener('hidden.bs.modal', function () {
-        // Optional: actions to perform when modal is closed, like clearing form fields if needed.
-      });
-
-
-      // **SETTINGS PANEL LOGIC - NEW**
+      // SETTINGS PANEL LOGIC
       const settingsBtn = document.getElementById('settingsBtn');
       const settingsPanel = document.getElementById('settingsPanel');
       const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-      const pageContent = document.getElementById('pageContent'); // Get page-content element
+      const pageContent = document.getElementById('pageContent');
 
       settingsBtn.addEventListener('click', function() {
-        settingsPanel.classList.add('open'); // Open settings panel
-        pageContent.classList.add('settings-open'); // Add class to shift main content
+        settingsPanel.classList.add('open');
+        pageContent.classList.add('settings-open');
+        settingsBtn.style.display = 'none'; // Hide settings button when panel is open
       });
       closeSettingsBtn.addEventListener('click', function() {
-        settingsPanel.classList.remove('open'); // Close settings panel
-        pageContent.classList.remove('settings-open'); // Remove class to shift back main content
+        settingsPanel.classList.remove('open');
+        pageContent.classList.remove('settings-open');
+        settingsBtn.style.display = 'block'; // Show settings button when panel is closed
       });
 
-      // **DARK MODE TOGGLE LOGIC - NEW**
+      // DARK MODE TOGGLE LOGIC
       const darkModeSwitch = document.getElementById('darkModeSwitch');
       darkModeSwitch.addEventListener('change', function() {
         if (this.checked) {
           enableDarkMode();
-          localStorage.setItem('darkMode', 'true'); // Store preference
+          localStorage.setItem('darkMode', 'true');
         } else {
           disableDarkMode();
-          localStorage.setItem('darkMode', 'false'); // Store preference
+          localStorage.setItem('darkMode', 'false');
         }
       });
 
@@ -523,29 +473,23 @@
         document.body.classList.add('dark-mode');
         settingsPanel.classList.add('dark-mode');
         document.querySelectorAll('.card').forEach(card => card.classList.add('dark-mode'));
-        document.querySelectorAll('.card-header.dark-mode.bg-dark.text-white').forEach(header => header.classList.add('dark-mode'));
         document.querySelectorAll('.table').forEach(table => table.classList.add('dark-mode'));
         document.querySelectorAll('.list-group').forEach(listGroup => listGroup.classList.add('dark-mode'));
-        document.querySelectorAll('.news-item').forEach(newsItem => newsItem.classList.add('dark-mode'));  //NEW
-        document.querySelectorAll('.dropdown-menu').forEach(dropDownMenu => dropDownMenu.classList.add('dark-mode'));
-
+        document.querySelectorAll('.news-item').forEach(newsItem => newsItem.classList.add('dark-mode'));
+        document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.add('dark-mode'));
       }
-
       function disableDarkMode() {
         isDarkMode = false;
         document.body.classList.remove('dark-mode');
         settingsPanel.classList.remove('dark-mode');
         document.querySelectorAll('.card').forEach(card => card.classList.remove('dark-mode'));
-        document.querySelectorAll('.card-header.bg-dark.text-white').forEach(header => header.classList.remove('dark-mode'));
         document.querySelectorAll('.table').forEach(table => table.classList.remove('dark-mode'));
         document.querySelectorAll('.list-group').forEach(listGroup => listGroup.classList.remove('dark-mode'));
-        document.querySelectorAll('.news-item').forEach(newsItem => newsItem.classList.remove('dark-mode'));//NEW
-        document.querySelectorAll('.dropdown-menu').forEach(dropDownMenu => dropDownMenu.classList.remove('dark-mode'));
-
+        document.querySelectorAll('.news-item').forEach(newsItem => newsItem.classList.remove('dark-mode'));
+        document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('dark-mode'));
       }
 
-
-      // **CHANGE PASSWORD FORM LOGIC - NEW**
+      // CHANGE PASSWORD FORM LOGIC
       const passwordForm = document.getElementById('passwordForm');
       passwordForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -563,11 +507,11 @@
         .then(data => {
           if (data.success) {
             passwordMessage.textContent = data.message;
-            passwordMessage.className = 'text-success'; // Green color for success
-            passwordForm.reset(); // Clear the form after success
+            passwordMessage.className = 'text-success';
+            passwordForm.reset();
           } else {
             passwordMessage.textContent = data.error;
-            passwordMessage.className = 'text-danger'; // Red color for error
+            passwordMessage.className = 'text-danger';
           }
         })
         .catch(err => {
@@ -576,16 +520,7 @@
           passwordMessage.className = 'text-danger';
         });
       });
-
-
     });
   </script>
-
-  <!-- Bootstrap JS -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-  ></script>
-  <!-- Swirling BG if used -->
-  <script src="js/bgEffect.js"></script>
 </body>
 </html>

@@ -1,13 +1,12 @@
 /* dashboard.css */
-
 :root {
-  --primary-color: #20c997; /* Teal Primary */
+  --primary-color: #20c997;
   --primary-darker: #158a6e;
-  --secondary-color: #007bff; /* Blue Accent */
+  --secondary-color: #007bff;
   --text-light: #e0e0e0;
   --text-dark: #333;
-  --bg-light: rgba(255, 255, 255, 0.05); /* Very light background for light mode */
-  --bg-dark: rgba(30, 30, 30, 0.7); /* Dark background for dark mode */
+  --bg-light: rgba(255, 255, 255, 0.05);
+  --bg-dark: rgba(30, 30, 30, 0.7);
   --bg-card-light: rgba(255, 255, 255, 0.1);
   --bg-card-dark: rgba(0, 0, 0, 0.5);
   --header-bg-light: rgba(0, 150, 150, 0.9);
@@ -20,6 +19,7 @@
   --btn-primary-hover: var(--primary-darker);
 }
 
+/* Global Styles */
 html, body {
   height: 100%;
   margin: 0;
@@ -33,6 +33,7 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Background Canvas */
 #bgCanvas {
   position: fixed;
   top: 0;
@@ -42,10 +43,20 @@ html, body {
   z-index: -1;
 }
 
+/* Overlay (if needed) */
 .overlay {
-  display: none;
+  display: none; /*  Hidden by default.  Consider removing if always unused. */
 }
 
+/* Settings Button positioned on the right */
+.settings-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1100;
+}
+
+/* Page Content */
 .page-content {
   position: relative;
   display: flex;
@@ -53,20 +64,22 @@ html, body {
   min-height: 100vh;
   background: transparent;
   z-index: 2;
-  margin: 0;
-  padding: 0;
+  padding: 1rem;
+  transition: filter 0.3s ease;
 }
 
+/* Container adjustments */
 .page-content .container {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  max-width: 1400px; /* Wider container for larger screens */
-  margin: 0 auto; /* Center container */
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
+/* Card Styles */
 .card {
   width: 100%;
   max-width: 1200px;
@@ -74,9 +87,13 @@ html, body {
   border: none;
   backdrop-filter: blur(12px);
   color: var(--text-light);
-  border-radius: 1rem; /* Rounded corners for cards */
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  overflow: hidden; /* Clip corners for rounded effect */
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: scale(1.02);
 }
 
 .card-header {
@@ -87,41 +104,36 @@ html, body {
   font-weight: 600;
   font-size: 1.25rem;
 }
-
 .card-body {
   padding: 2rem;
 }
 
+/* Typography */
 h3, h4, h5, p, label, small {
   color: var(--text-light);
-  line-height: 1.6; /* Improved line spacing for readability */
+  line-height: 1.6;
 }
-
 h3 {
   font-size: 2rem;
   margin-bottom: 0.75rem;
 }
-
 h4 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
-
 h5 {
   font-size: 1.25rem;
   margin-bottom: 1rem;
 }
-
 p {
   margin-bottom: 1rem;
 }
-
 hr {
   border-color: rgba(255, 255, 255, 0.1);
   margin: 1.5rem 0;
 }
 
-/* Buttons */
+/* Button Styles */
 .btn {
   border: none;
   padding: 0.75rem 1.5rem;
@@ -130,114 +142,73 @@ hr {
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-weight: 500;
+  white-space: nowrap; /* Prevents button text from wrapping */
 }
 
 .btn-primary {
   background-color: var(--btn-primary);
   color: var(--text-light);
 }
-
 .btn-primary:hover {
-  background-color: var(--primary-darker);
+  background-color: var(--btn-primary-hover);
 }
-
 .btn-success {
   background-color: #28a745;
   color: var(--text-light);
 }
-
 .btn-success:hover {
   background-color: #218838;
 }
-
 .btn-danger {
   background-color: #dc3545;
   color: var(--text-light);
 }
-
 .btn-danger:hover {
   background-color: #c82333;
 }
-
-.btn-secondary, .btn-logout, .btn-close-settings {
+.btn-secondary,
+.btn-logout,
+.btn-close-settings {
   background-color: rgba(108, 117, 125, 0.8);
   color: var(--text-light);
 }
-
-.btn-secondary:hover, .btn-logout:hover, .btn-close-settings:hover {
+.btn-secondary:hover,
+.btn-logout:hover,
+.btn-close-settings:hover {
   background-color: rgba(88, 95, 101, 0.9);
 }
 
-.btn-settings {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--text-light);
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-}
-
-.btn-settings:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Settings panel */
+/* Settings Panel */
 .settings-panel {
   position: fixed;
   top: 0;
   right: 0;
   height: 100%;
-  width: 320px; /* Slightly wider settings panel */
+  width: 320px;
   background-color: var(--settings-bg-light);
   color: var(--text-light);
   box-shadow: -2px 0 10px rgba(0,0,0,0.3);
   padding: 2rem;
   z-index: 1001;
   transform: translateX(100%);
-  transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1); /* Smoother transition */
-  overflow-y: auto; /* For scrollable settings if content overflows */
+  transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+  overflow-y: auto;
 }
-
 .settings-panel.open {
   transform: translateX(0);
 }
-
 .settings-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 }
-
 .settings-header h4 {
   margin: 0;
   font-size: 1.75rem;
 }
 
-.btn-close-settings {
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.8;
-}
-
-.btn-close-settings:hover {
-  opacity: 1;
-}
-
-
-/* Form elements */
+/* Form Elements */
 .form-control {
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -245,157 +216,113 @@ hr {
   border-radius: 0.3rem;
   padding: 0.6rem 1rem;
   margin-bottom: 0.75rem;
-}
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; /* Add transition */
 
+}
 .form-control:focus {
   background-color: rgba(255, 255, 255, 0.1);
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25); /* Need to define --primary-color-rgb if using rgba here */
+    box-shadow: 0 0 0 0.2rem rgba(32, 201, 151, 0.25); /* Add focus effect */
   outline: 0;
 }
-
 .form-label {
   margin-bottom: 0.3rem;
   display: block;
   font-weight: 500;
 }
-
-.form-check-input {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.form-check-input:checked {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-.form-check-label {
-  color: var(--text-light);
-}
-
 #passwordMessage {
   padding: 0.75rem 1.25rem;
   margin-top: 1rem;
   border-radius: 0.3rem;
-  display: none; /* Hidden by default, shown by script */
+  display: none; /*  Hidden by default */
 }
-
 .text-success {
   color: #28a745;
   background-color: rgba(40, 167, 69, 0.1);
   border: 1px solid rgba(40, 167, 69, 0.3);
 }
-
 .text-danger {
   color: #dc3545;
   background-color: rgba(220, 53, 69, 0.1);
   border: 1px solid rgba(220, 53, 69, 0.3);
 }
 
-/* News Container */
+/* News Items */
 #newsContainer {
   margin-top: 1.5rem;
 }
-
 .news-item {
   padding: 1.25rem;
   border-radius: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 1rem;
-  background-color: rgba(255, 255, 255, 0.03); /* Very subtle background */
+  background-color: rgba(255, 255, 255, 0.03);
 }
-
 .news-item h5 {
   margin-top: 0;
   margin-bottom: 0.5rem;
   font-size: 1.15rem;
 }
-
 .news-item p {
   margin-bottom: 0.75rem;
 }
-
 .news-item small {
   color: rgba(255, 255, 255, 0.7);
   font-style: italic;
 }
 
-
 /* Dark Mode Styles */
 body.dark-mode {
-  background-color: #181818; /* Deeper dark background */
+  background-color: #181818;
   color: var(--text-light);
 }
-
 body.dark-mode .card {
   background: var(--bg-card-dark);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5); /* Stronger shadow in dark mode */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
 }
-
 body.dark-mode .card-header {
   background: var(--header-bg-dark);
 }
-
 body.dark-mode .settings-panel {
   background-color: var(--settings-bg-dark);
   box-shadow: -2px 0 10px rgba(0,0,0,0.5);
 }
-
-body.dark-mode .settings-header {
-  background: var(--settings-header-bg-dark); /* If you want to style settings header differently in dark mode */
-}
-
 body.dark-mode .form-control {
   background-color: rgba(0, 0, 0, 0.5);
   border-color: rgba(255, 255, 255, 0.2);
   color: var(--text-light);
 }
-
-body.dark-mode .form-control:focus {
-  background-color: rgba(0, 0, 0, 0.7);
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.5); /* Adjust shadow in dark mode */
-}
-
 body.dark-mode hr {
   border-color: rgba(255, 255, 255, 0.2);
 }
-
 body.dark-mode .news-item {
   background-color: rgba(0, 0, 0, 0.3);
   border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Dark Mode Specific Button Styles - Example */
-.btn-primary-dark {
-  background-color: var(--primary-darker); /* Slightly darker primary for dark mode */
-  color: var(--text-light);
-}
-.btn-primary-dark:hover {
-  background-color: var(--primary-color); /* Hover brings it back to primary */
-}
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .page-content .container {
+    padding: 1rem;
+  }
+  .card {
+    margin: 0 1rem;
+  }
+  .settings-panel {
+    width: 280px;
+    padding: 1.5rem;
+  }
+  h3 { font-size: 1.75rem; }
+  h4 { font-size: 1.25rem; }
+     /* Make buttons full width on small screens */
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem; /* Add some spacing between stacked buttons */
+    }
 
-.btn-secondary-dark, .btn-logout-dark, .btn-settings-dark {
-  background-color: rgba(80, 80, 80, 0.9); /* Darker secondary for dark mode */
-  color: var(--text-light);
-}
-.btn-secondary-dark:hover, .btn-logout-dark:hover, .btn-settings-dark:hover {
-  background-color: rgba(100, 100, 100, 1); /* Hover lightens it a bit */
-}
-
-.btn-success-dark {
-  background-color: #1e7e34; /* Darker success for dark mode */
-  color: var(--text-light);
-}
-.btn-success-dark:hover {
-  background-color: #28a745; /* Hover brings it back to normal success */
-}
-
-.btn-danger-dark {
-  background-color: #bb2d3b; /* Darker danger for dark mode */
-  color: var(--text-light);
-}
-.btn-danger-dark:hover {
-  background-color: #dc3545; /* Hover brings it back to normal danger */
+    /* Adjust the settings button position */
+    .settings-button {
+        top: 10px;
+        right: 10px;
+    }
 }

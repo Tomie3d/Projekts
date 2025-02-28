@@ -3,99 +3,183 @@
 <head>
   <meta charset="UTF-8" />
   <title>Register - Employee Time Tracking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Bootstrap CSS -->
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"
   />
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="css/home.css" />
+  <!-- Background CSS -->
   <link rel="stylesheet" href="css/bg.css" />
-    <style>
+  <style>
     .overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5); /* Adjust the alpha (0.5) for darkness */
-      z-index: 1; /* Ensure it's above the canvas but below the content */
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1;
     }
-
     .page-content {
-      position: relative; /*  Important:  Allows the z-index to work correctly */
-      z-index: 2; /*  Ensure it's above the overlay */
+      position: relative;
+      z-index: 2;
+    }
+    /* Alert container positioned at the top center */
+    #alert-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      width: 90%;
+      max-width: 500px;
     }
   </style>
 </head>
 <body>
-  <!-- If you still use the swirling ASCII background -->
+  <!-- Background Canvas -->
   <canvas id="bgCanvas"></canvas>
+  <!-- Darkening Overlay -->
   <div class="overlay"></div>
+  <!-- Alert Container -->
+  <div id="alert-container"></div>
+  <!-- Page Content -->
   <div class="page-content">
-    <div class="container mt-5">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white text-center">
-          <h3>Register</h3>
-        </div>
-        <div class="card-body">
-          <!-- IMPORTANT: method=POST, action=/register to match server.js below -->
-          <form method="POST" action="/register" id="registerForm">
-            <div class="mb-3">
-              <label for="username" class="form-label">Username</label>
-              <input type="text" name="username" id="username" class="form-control" required />
+    <div class="container vh-100 d-flex align-items-center">
+      <div class="row w-100">
+        <div class="col-md-4 mx-auto">
+          <div class="card shadow">
+            <div class="card-header text-center bg-primary text-white">
+              <h3>Register</h3>
             </div>
-            <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" name="password" id="password" class="form-control" required />
+            <div class="card-body">
+              <!-- IMPORTANT: method=POST, action=/register to match server.js -->
+              <form method="POST" action="/register" id="registerForm" novalidate>
+                <div class="mb-3">
+                  <label for="username" class="form-label">Username</label>
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    class="form-control"
+                    placeholder="Enter username"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    class="form-control"
+                    placeholder="Enter password"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="confirmPassword" class="form-label">Confirm Password</label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    class="form-control"
+                    placeholder="Confirm password"
+                    required
+                  />
+                </div>
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-success">Register</button>
+                </div>
+              </form>
+              <hr />
+              <p class="text-center">
+                Already have an account? <a href="login.html">Login here</a>
+              </p>
             </div>
-            <div class="mb-3">
-              <label for="confirmPassword" class="form-label">Confirm Password</label>
-              <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" required />
+            <div class="card-footer text-center">
+              © 2025 Tomass Sanders
             </div>
-            <button type="submit" class="btn btn-success w-100">Register</button>
-          </form>
-          <hr />
-          <p class="text-center">
-            Already have an account? <a href="login.html">Login here</a>
-          </p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Background Effect JS -->
   <script src="js/bgEffect.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const registerForm = document.getElementById('registerForm');
-        registerForm.addEventListener('submit', function(event) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+      const registerForm = document.getElementById('registerForm');
+      const alertContainer = document.getElementById('alert-container');
 
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-                event.preventDefault(); // Prevent form submission
-            }
-        });
+      // Client-side password matching validation
+      registerForm.addEventListener('submit', function(event) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        if (password !== confirmPassword) {
+          event.preventDefault();
+          showAlert('Passwords do not match!', 'danger');
+        }
+      });
 
-        // Display error messages from server (if any)
-        const urlParams = new URLSearchParams(window.location.search);
-        const error = urlParams.get('error');
-        if (error === 'missing') {
-          alert('Please fill in all fields.');
-        } else if (error === 'db') {
-          alert('A database error occurred. Please try again later.');
-        } else if (error === 'taken') {
-          alert('That username is already taken. Please choose another.');
-        } else if (error === 'hash') {
-          alert('An error occurred while hashing your password. Please try again.');
-        } else if (error === 'insert') {
-          alert('An error occurred while creating your account. Please try again.');
-        } else if(error === 'mismatch'){
-          alert('Passwords do not match.');
-        }
-         else if (error === 'unknown') {
-          alert('An unknown error occurred.  Please try again.');
-        }
+      // Display server feedback from URL parameters using Bootstrap alerts
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get('error');
+      let message = '';
+      let type = 'danger';
+
+      switch (error) {
+        case 'missing':
+          message = 'Please fill in all fields.';
+          break;
+        case 'db':
+          message = 'A database error occurred. Please try again later.';
+          break;
+        case 'taken':
+          message = 'That username is already taken. Please choose another.';
+          break;
+        case 'hash':
+          message = 'An error occurred while processing your password. Please try again.';
+          break;
+        case 'insert':
+          message = 'An error occurred while creating your account. Please try again.';
+          break;
+        case 'mismatch':
+          message = 'Passwords do not match.';
+          break;
+        case 'unknown':
+          message = 'An unknown error occurred. Please try again.';
+          break;
+      }
+      if (message) {
+        showAlert(message, type);
+      }
+
+      // Helper function to display alerts
+      function showAlert(msg, alertType) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${alertType} alert-dismissible fade show`;
+        alertDiv.role = 'alert';
+        alertDiv.innerHTML = `
+          ${msg}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        alertContainer.appendChild(alertDiv);
+        setTimeout(() => {
+          alertDiv.classList.remove('show');
+        }, 5000);
+      }
     });
   </script>
 </body>
